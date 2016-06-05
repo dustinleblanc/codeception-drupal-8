@@ -1,0 +1,26 @@
+{
+    "name": "dustinleblanc/codeception-drupal-8",
+    "description": "Drupal 8 framework integration for Codeception",
+    "type": "package",
+    "require": {
+        "codeception/codeception": "^2.1",
+        "Symfony/http-kernel": "3.1.*"
+    },
+    "require-dev": {
+        "codegyre/robo": "^0.7.2",
+        "drupal/core": "8.1.*"
+    },
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Dustin LeBlanc",
+            "email": "dustin.m.leblanc@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Codeception\\Module\\Drupal8Module": "src/"
+        }
+    }
+}
