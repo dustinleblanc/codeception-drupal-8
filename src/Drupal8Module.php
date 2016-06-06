@@ -6,8 +6,14 @@ use Codeception\Configuration;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
 use Drupal\Core\DrupalKernel;
+use Drupal\user\Entity\Role;
+use Drupal\user\Entity\User;
 use Symfony\Component\HttpKernel\Client;
 
+/**
+ * Class Drupal8Module
+ * @package Codeception\Module
+ */
 class Drupal8Module extends Framework
 {
     /**
@@ -28,7 +34,9 @@ class Drupal8Module extends Framework
         $this->config = array_merge(
           [
             'core_path' => __DIR__ . '/web/core',
-            'create_users' => true
+            'create_users' => true,
+            'destroy_users' => true,
+            'test_user_pass' => 'password'
           ],
           (array)$config
         );
@@ -37,14 +45,83 @@ class Drupal8Module extends Framework
         parent::__construct($container);
     }
 
+    /**
+     * @param \Codeception\Module\TestCase $test
+     */
     public function _before(TestCase $test)
     {
         $this->client = new Client($this->kernel);
         $this->client->followRedirects(true);
+
+        if ($this->config['create_users']) {
+            $this->scaffoldTestUsers();
+        }
     }
 
+    /**
+     * @param \Codeception\Module\TestCase $test
+     */
     public function _after(TestCase $test)
     {
+        if ($this->config['destroy_users']) {
+            $this->tearDownTestUsers();
+        }
         $this->kernel->shutdown();
+    }
+
+    /**
+     * Create a test user based on a role.
+     *
+     * @param string $role
+     *
+     * @return int
+     */
+    public function createTestUser($role = 'administrator')
+    {
+        return User::create([
+          'name' => "test{$role}User",
+          'mail' => "test{$role}User@example.com",
+          'roles' => [$role],
+          'pass' => $this->config['test_user_pass'],
+          'status' => 1,
+        ])->save();
+    }
+
+    /**
+     * Destroy a user that matches a test user name.
+     *
+     * @param $role
+     */
+    public function destroyTestUser($role)
+    {
+        $users = \Drupal::entityQuery('user')
+                        ->condition("name", "test{$role}User")
+                        ->execute();
+
+        array_map(user_delete($uid), $users);
+    }
+
+    /**
+     * Create a test user for each role in Drupal database.
+     *
+     * @return array
+     */
+    public function scaffoldTestUsers()
+    {
+        $roles = Role::loadMultiple();
+
+        return array_map($this->createTestUser($role), $roles);
+    }
+
+    /**
+     * Remove all users matching test user names.
+     *
+     * @return array
+     */
+    public function tearDownTestUsers()
+    {
+        $roles = Role::loadMultiple();
+
+        return array_map($this->destroyTestUser($role), $roles);
     }
 }
