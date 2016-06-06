@@ -5,10 +5,8 @@ namespace Codeception\Module;
 use Codeception\Configuration;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
-use Drupal\Core\DrupalKernel;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
-use Symfony\Component\HttpKernel\Client;
 
 /**
  * Class Drupal8Module
@@ -50,9 +48,6 @@ class Drupal8Module extends Framework
      */
     public function _before(TestCase $test)
     {
-        $this->client = new Client($this->kernel);
-        $this->client->followRedirects(true);
-
         if ($this->config['create_users']) {
             $this->scaffoldTestUsers();
         }
@@ -66,7 +61,6 @@ class Drupal8Module extends Framework
         if ($this->config['destroy_users']) {
             $this->tearDownTestUsers();
         }
-        $this->kernel->shutdown();
     }
 
     /**

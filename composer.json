@@ -3,8 +3,7 @@
     "description": "Drupal 8 framework integration for Codeception",
     "type": "package",
     "require": {
-        "codeception/codeception": "^2.1",
-        "Symfony/http-kernel": "3.1.*"
+        "codeception/codeception": "^2.1"
     },
     "require-dev": {
         "codegyre/robo": "^0.7.2",
