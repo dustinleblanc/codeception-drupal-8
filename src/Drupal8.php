@@ -5,6 +5,7 @@ namespace Codeception\Module;
 use Codeception\Configuration;
 use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
+use Codeception\Module;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 
@@ -12,7 +13,7 @@ use Drupal\user\Entity\User;
  * Class Drupal8Module
  * @package Codeception\Module
  */
-class Drupal8 extends Framework
+class Drupal8 extends Module
 {
     /**
      * @var DrupalKernel
