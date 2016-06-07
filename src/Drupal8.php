@@ -12,7 +12,7 @@ use Drupal\user\Entity\User;
  * Class Drupal8Module
  * @package Codeception\Module
  */
-class Drupal8Module extends Framework
+class Drupal8 extends Framework
 {
     /**
      * @var DrupalKernel
