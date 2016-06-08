@@ -15,15 +15,6 @@ use Drupal\user\Entity\User;
  */
 class Drupal8 extends Module
 {
-    /**
-     * @var DrupalKernel
-     */
-    protected $kernel;
-
-    /**
-     * @var Client
-     */
-    protected $client;
 
     /**
      * Drupal8Module constructor.
@@ -32,15 +23,13 @@ class Drupal8 extends Module
     {
         $this->config = array_merge(
           [
-            'core_path' => __DIR__ . '/web/core',
+            'drupal_root' => __DIR__ . '/web',
             'create_users' => true,
             'destroy_users' => true,
             'test_user_pass' => 'password'
           ],
           (array)$config
         );
-        $autoloader = Configuration::projectDir() . '/autoload.php';
-        $this->kernel = new DrupalKernel('test', $autoloader);
         parent::__construct($container);
     }
 
