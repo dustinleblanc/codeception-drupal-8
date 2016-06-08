@@ -2,6 +2,7 @@
 
 namespace Codeception\Module;
 
+use Codeception\Configuration;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
 use Drupal\user\Entity\Role;
@@ -21,13 +22,15 @@ class Drupal8 extends Module
     {
         $this->config = array_merge(
           [
-            'drupal_root' => __DIR__ . '/web',
+            'drupal_root' => Configuration::projectDir() . '/web',
+            'autoloader' => Configuration::projectDir() . '/autoload.php'
             'create_users' => true,
             'destroy_users' => true,
             'test_user_pass' => 'password'
           ],
           (array)$config
         );
+        require_once $this->config['autoloader'];
         parent::__construct($container);
     }
 
