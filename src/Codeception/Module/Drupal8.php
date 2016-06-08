@@ -2,8 +2,6 @@
 
 namespace Codeception\Module;
 
-use Codeception\Configuration;
-use Codeception\Lib\Framework;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
 use Drupal\user\Entity\Role;
@@ -58,23 +56,25 @@ class Drupal8 extends Module
      *
      * @param string $role
      *
-     * @return int
+     * @return $this
      */
     public function createTestUser($role = 'administrator')
     {
-        return User::create([
+        User::create([
           'name' => "test{$role}User",
           'mail' => "test{$role}User@example.com",
           'roles' => [$role],
           'pass' => $this->config['test_user_pass'],
           'status' => 1,
         ])->save();
+        return $this;
     }
 
     /**
      * Destroy a user that matches a test user name.
      *
      * @param $role
+     * @return $this
      */
     public function destroyTestUser($role)
     {
@@ -83,29 +83,30 @@ class Drupal8 extends Module
                         ->execute();
 
         array_map(user_delete($uid), $users);
+        return $this;
     }
 
     /**
      * Create a test user for each role in Drupal database.
      *
-     * @return array
+     * @return $this
      */
     public function scaffoldTestUsers()
     {
         $roles = Role::loadMultiple();
-
-        return array_map($this->createTestUser($role), $roles);
+        array_map($this->createTestUser($role), $roles);
+        return $this;
     }
 
     /**
      * Remove all users matching test user names.
      *
-     * @return array
+     * @return $this
      */
     public function tearDownTestUsers()
     {
         $roles = Role::loadMultiple();
-
-        return array_map($this->destroyTestUser($role), $roles);
+        array_map($this->destroyTestUser($role), $roles);
+        return $this;
     }
 }
