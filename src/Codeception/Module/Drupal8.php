@@ -45,9 +45,9 @@ class Drupal8 extends Module
     }
 
     /**
-     * @param \Codeception\Module\TestCase $test
+     * Setup Test environment.
      */
-    public function _before(TestCase $test)
+    public function _beforeSuite()
     {
         if ($this->config['create_users']) {
             $this->scaffoldTestUsers();
@@ -55,9 +55,9 @@ class Drupal8 extends Module
     }
 
     /**
-     * @param \Codeception\Module\TestCase $test
+     * Tear down after tests.
      */
-    public function _after(TestCase $test)
+    public function _afterSuite()
     {
         if ($this->config['destroy_users']) {
             $this->tearDownTestUsers();

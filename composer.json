@@ -7,7 +7,7 @@
     },
     "require-dev": {
         "codegyre/robo": "^0.7.2",
-        "drupal/core": "8.1.*"
+        "drupal/drupal": "8.1.*"
     },
     "license": "GPL-2.0",
     "authors": [
