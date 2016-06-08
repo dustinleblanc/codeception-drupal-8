@@ -22,8 +22,8 @@ class Drupal8 extends Module
     {
         $this->config = array_merge(
           [
-            'drupal_root' => Configuration::projectDir() . '/web',
-            'autoloader' => Configuration::projectDir() . '/autoload.php',
+            'drupal_root' => Configuration::projectDir() . 'web',
+            'autoloader' => Configuration::projectDir() . 'autoload.php',
             'create_users' => true,
             'destroy_users' => true,
             'test_user_pass' => 'password'
@@ -37,7 +37,7 @@ class Drupal8 extends Module
     /**
      * Setup Test environment.
      */
-    public function _beforeSuite()
+    public function _beforeSuite($settings = [])
     {
         if ($this->config['create_users']) {
             $this->scaffoldTestUsers();
