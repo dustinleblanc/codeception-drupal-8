@@ -87,13 +87,16 @@ class Drupal8 extends Module
      */
     public function createTestUser($role = 'administrator')
     {
-        User::create([
-          'name' => "test{$role}User",
-          'mail' => "test{$role}User@example.com",
-          'roles' => [$role],
-          'pass' => $this->config['test_user_pass'],
-          'status' => 1,
-        ])->save();
+        if ($role != 'anonymous' && !$this->userExists($role)) {
+            $this->output->writeln("creating test{$role}User...");
+            User::create([
+              'name' => "test{$role}User",
+              'mail' => "test{$role}User@example.com",
+              'roles' => [$role],
+              'pass' => $this->config['test_user_pass'],
+              'status' => 1,
+            ])->save();
+        }
         return $this;
     }
 
@@ -105,11 +108,12 @@ class Drupal8 extends Module
      */
     public function destroyTestUser($role)
     {
+        $this->output->writeln("deleting test{$role}User...");
         $users = \Drupal::entityQuery('user')
                         ->condition("name", "test{$role}User")
                         ->execute();
 
-        array_map(user_delete($uid), $users);
+        array_map('user_delete', array_keys($users));
         return $this;
     }
 
@@ -120,8 +124,7 @@ class Drupal8 extends Module
      */
     public function scaffoldTestUsers()
     {
-        $roles = Role::loadMultiple();
-        array_map($this->createTestUser($role), $roles);
+        array_map([$this, 'createTestUser'], array_keys($this->roles));
         return $this;
     }
 
@@ -132,8 +135,19 @@ class Drupal8 extends Module
      */
     public function tearDownTestUsers()
     {
-        $roles = Role::loadMultiple();
-        array_map($this->destroyTestUser($role), $roles);
+
+        array_map([$this, 'destroyTestUser'], array_keys($this->roles));
         return $this;
+    }
+
+    /**
+     * @param $role
+     * @return bool
+     */
+    private function userExists($role)
+    {
+        return !empty(\Drupal::entityQuery('user')
+                             ->condition('name', "test{$role}User")
+                             ->execute());
     }
 }
