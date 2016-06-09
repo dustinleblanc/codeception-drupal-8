@@ -113,7 +113,10 @@ class Drupal8 extends Module
                         ->condition("name", "test{$role}User")
                         ->execute();
 
-        array_map('user_delete', array_keys($users));
+        $users = User::loadMultiple($users);
+        foreach ($users as $user) {
+            $user->delete();
+        }
         return $this;
     }
 
