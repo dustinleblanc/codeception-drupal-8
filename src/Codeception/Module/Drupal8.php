@@ -5,8 +5,10 @@ namespace Codeception\Module;
 use Codeception\Configuration;
 use Codeception\Lib\ModuleContainer;
 use Codeception\Module;
+use Codeception\TestDrupalKernel;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class Drupal8Module
@@ -14,6 +16,17 @@ use Drupal\user\Entity\User;
  */
 class Drupal8 extends Module
 {
+    /**
+     * A list of all of the available roles on our Drupal site.
+     * @var \Drupal\Core\Entity\EntityInterface[]|static[]
+     */
+    protected $roles;
+
+    /**
+     * An output helper so we can add some custom output when tests run.
+     * @var \Symfony\Component\Console\Output\ConsoleOutput
+     */
+    protected $output;
 
     /**
      * Drupal8Module constructor.
@@ -25,12 +38,23 @@ class Drupal8 extends Module
             'drupal_root' => Configuration::projectDir() . 'web',
             'site_path' => 'sites/test',
             'create_users' => true,
-            'destroy_users' => false,
+            'destroy_users' => true,
             'test_user_pass' => 'test'
           ],
           (array)$config
         );
-        require_once Configuration::projectDir() . $this->config['autoloader'];
+
+        // Bootstrap a bare minimum Kernel so we can interact with Drupal.
+        $autoloader = require_once Configuration::projectDir() . 'web/autoload.php';
+        $kernel = new TestDrupalKernel('prod', $autoloader,
+          $this->config['drupal_root']);
+        $kernel->bootTestEnvironment($this->config['site_path']);
+
+        // Allow for setting some basic info output.
+        $this->output = new ConsoleOutput();
+        // Get our role definitions as we use them a lot.
+        $this->roles = Role::loadMultiple();
+
         parent::__construct($container);
     }
 
