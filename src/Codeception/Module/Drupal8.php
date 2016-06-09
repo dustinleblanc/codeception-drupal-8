@@ -23,10 +23,10 @@ class Drupal8 extends Module
         $this->config = array_merge(
           [
             'drupal_root' => Configuration::projectDir() . 'web',
-            'autoloader' => 'web/autoload.php',
+            'site_path' => 'sites/test',
             'create_users' => true,
-            'destroy_users' => true,
-            'test_user_pass' => 'password'
+            'destroy_users' => false,
+            'test_user_pass' => 'test'
           ],
           (array)$config
         );
