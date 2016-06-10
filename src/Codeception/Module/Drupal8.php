@@ -45,7 +45,7 @@ class Drupal8 extends Module
         );
 
         // Bootstrap a bare minimum Kernel so we can interact with Drupal.
-        $autoloader = require_once Configuration::projectDir() . 'web/autoload.php';
+        $autoloader = require $this->config['drupal_root'] . '/autoload.php';
         $kernel = new TestDrupalKernel('prod', $autoloader,
           $this->config['drupal_root']);
         $kernel->bootTestEnvironment($this->config['site_path']);
