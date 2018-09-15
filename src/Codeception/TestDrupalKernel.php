@@ -26,7 +26,10 @@ class TestDrupalKernel extends DrupalKernel
     }
 
     public function bootTestEnvironment($sitePath)
-    {
+    {        
+        // Change the working directory to allow Drupal to find
+        // core/core.services.yml.
+        chdir('web');
         static::bootEnvironment();
         $this->setSitePath($sitePath);
         $this->loadLegacyIncludes();
